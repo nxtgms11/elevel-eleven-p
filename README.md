@@ -1,7 +1,5 @@
 # 11:11 — Maybe, Someday?
 
-
-
 A small, cinematic, single-page web experience: a video dedication that gradually becomes a personal letter.
 Built with plain HTML, CSS and JavaScript. No build step, no dependencies, no tracking.
 
@@ -18,7 +16,7 @@ Built with plain HTML, CSS and JavaScript. No build step, no dependencies, no tr
 | 3 | Memories | A swipeable timeline of polaroid-style cards. |
 | 4 | Voice | A custom audio player for your recording (never autoplays). |
 | 5 | Confession | Paragraphs fade in as she scrolls. |
-| 6 | The question | Three equally weighted answers. Nothing is stored or transmitted. |
+| 6 | The question | A falling-star sequence, then the question and three equally weighted answers. Nothing is stored or transmitted. |
 | 7 | Closing | A quiet ending. |
 
 ---
@@ -69,6 +67,34 @@ Smaller lines (opening screen text, chapter headings, closing lines) are plain t
 Colours are CSS variables at the top of the `<style>` block (`--navy`, `--gold`, `--ivory`, ...).
 
 **Keep filenames lowercase with no spaces** and make sure they match `CONFIG` exactly. Servers like GitHub Pages are case-sensitive: `Video.MP4` is not `video.mp4`.
+
+## Getting her answer (optional, her choice)
+
+GitHub Pages is a static host with no server, and the site deliberately does **not** track clicks. Instead, after she picks an answer, an optional **"Send my answer"** button can appear. Tapping it opens WhatsApp (or SMS) with a pre-filled message such as `Hey, I opened the 11:11 page. My answer: "I'm not sure. I need some time to think."`. She can edit it and **she** presses send. Nothing is ever sent automatically.
+
+Set it up in `CONFIG`:
+
+```js
+reply:{ whatsapp:"919876543210", sms:"", button:"Send my answer", hint:"...", intro:"..." }
+```
+
+- `whatsapp`: your number with country code, digits only, no `+`, spaces or dashes.
+- `sms`: used only if `whatsapp` is empty, e.g. `"+919876543210"`.
+- Leave both empty and the button stays hidden.
+- It appears for all three answers, so no option is favoured. She can ignore it, close the page and talk to you later.
+
+## Memory card photos
+
+Each memory in `CONFIG` can have its photo set in one of four ways:
+
+| Setting | Result |
+|---|---|
+| `photo` left out | card with no picture |
+| `photo: null` | labelled "Your photo here" placeholder |
+| `photo: "assets/x.jpg"` | one photo |
+| `photo: ["assets/a.jpg","assets/b.jpg"]` | swipeable photos on one card |
+
+Currently expected files: `memory-01.jpg` (7th Grade), `memory-03.jpg` (The dream), `birthday-her-01.jpg`, `call-01.jpg`, `durga-01.jpg`, `mysuru-01.jpg` to `mysuru-03.jpg`, `birthday-me-01.jpg` (26th September) and `today-01.jpg`. If a file is missing, the card shows an "Add assets/..." note instead of a broken image. Use `ratio:"1/1"` for portrait photos and the default `4/3` for landscape ones. Resize photos to ~1200 px wide before uploading.
 
 ---
 
