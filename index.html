@@ -86,23 +86,19 @@ padding:16px 30px;min-height:52px;cursor:pointer;transition:transform .35s ease,
 .card p{font-size:.92rem;line-height:1.6;color:#3d3526;text-align:left}
 .hint{font-size:.75rem;color:var(--dusty);letter-spacing:.1em}
 
-/* 4 audio */
-.letter{background:linear-gradient(#121a33,#0c1329);border:1px solid rgba(216,184,120,.25);padding:26px 22px;border-radius:4px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.4)}
-.player{display:flex;align-items:center;gap:16px}
-.pp{flex:0 0 56px;height:56px;border-radius:50%;border:1px solid var(--gold);background:rgba(216,184,120,.08);color:var(--gold);cursor:pointer;display:grid;place-items:center;transition:box-shadow .3s,transform .3s}
-.pp:hover{box-shadow:0 0 24px rgba(216,184,120,.35);transform:scale(1.05)}
-.pp svg{width:22px;height:22px;fill:currentColor}
-.wave{position:relative;flex:1;height:54px;display:flex;align-items:center;gap:2px}
-.wave i{flex:1;background:rgba(203,191,166,.3);border-radius:2px;height:var(--h);transition:background .3s}
-.wave i.p{background:var(--gold)}
-.playing .wave i{animation:bar 1s ease-in-out infinite alternate;animation-delay:var(--dl)}
-@keyframes bar{to{transform:scaleY(.55)}}
-.wave input{position:absolute;inset:0;width:100%;opacity:0;cursor:pointer;margin:0}
-.times{display:flex;justify-content:space-between;margin-top:12px;font-size:.78rem;color:var(--beige);font-variant-numeric:tabular-nums}
+/* 4 letter */
+.letter{background:linear-gradient(#121a33,#0c1329);border:1px solid rgba(216,184,120,.25);padding:30px 24px;border-radius:4px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.4);text-align:left}
+.letter>.hand{margin-bottom:22px}
+.lp{font-family:var(--serif);font-size:clamp(1.15rem,4.2vw,1.35rem);line-height:1.7;color:var(--ivory);margin-bottom:1.5em;opacity:0;transform:translateY(12px);transition:opacity 1.3s ease,transform 1.3s ease}
+.lp.v{opacity:1;transform:none}
+.lp:last-child{margin-bottom:0;font-style:italic;color:var(--gold)}
+.fade:not(.in-v){pointer-events:none}
 
 /* 5 confession */
 .conf{display:block;padding-top:max(56px,env(safe-area-inset-top))}
-.conf .in{max-width:560px;gap:0;margin:0 auto}
+.conf .in{max-width:560px;width:100%;min-width:0;gap:0;margin:0 auto}
+#paras{width:100%}
+.conf p{overflow-wrap:break-word}
 .conf h2{margin:8vh 0 14vh}
 .conf p{font-family:var(--serif);font-size:clamp(1.25rem,4.6vw,1.6rem);line-height:1.65;color:var(--ivory);margin-bottom:11vh;text-align:center;opacity:0;transform:translateY(14px);transition:opacity 1.6s ease,transform 1.6s ease}
 .conf p.v{opacity:1;transform:none}
@@ -145,7 +141,7 @@ padding:16px 30px;min-height:52px;cursor:pointer;transition:transform .35s ease,
 
 @media (prefers-reduced-motion:reduce){
 *{animation:none!important;transition-duration:.01s!important}
-.ch,.fade,.conf p{transform:none!important}
+.ch,.fade,.conf p,.lp{transform:none!important}
 }
 </style>
 </head>
@@ -178,18 +174,12 @@ padding:16px 30px;min-height:52px;cursor:pointer;transition:transform .35s ease,
  <div class="in"><p class="hint">swipe →</p><button class="btn" id="toVoice">And there's something I want to tell you...</button></div>
 </section>
 
-<!-- 3 · VOICE -->
+<!-- 3 · LETTER -->
 <section class="ch" id="c3"><div class="in">
  <h2>Before you go any further...</h2><p class="sub">I thought I'd say this in my own words.</p>
- <div class="letter" id="letter">
-  <p class="hand" style="margin-bottom:16px">A little message for you</p>
-  <div class="player"><button class="pp" id="pp" aria-label="Play"><svg viewBox="0 0 24 24" id="ppi"><path d="M8 5v14l11-7z"/></svg></button>
-   <div class="wave" id="wave"><input type="range" id="seek" min="0" max="1000" value="0" aria-label="Seek"></div></div>
-  <div class="times"><span id="cur">0:00</span><span id="dur">0:00</span></div>
-  <p class="sub" id="aph" style="display:none;margin-top:14px;max-width:none">Voice placeholder — add your recording at <b id="apath"></b></p>
- </div>
+ <div class="letter" id="letter"><p class="hand">A little message for you</p><div id="lparas"></div></div>
  <h2 id="aDone" class="fade" style="font-size:clamp(1.5rem,5vw,2.1rem);font-style:italic">Okay... now that I've said that.</h2>
- <button class="btn fade" id="toConf">One last thing →</button>
+ <button class="btn fade" id="toConf" style="margin-bottom:6vh">One last thing →</button>
 </div></section>
 
 <!-- 4 · CONFESSION -->
@@ -201,6 +191,7 @@ padding:16px 30px;min-height:52px;cursor:pointer;transition:transform .35s ease,
  <div id="qBlock" class="pre" style="display:flex;flex-direction:column;align-items:center;gap:18px;width:100%">
   <h1>Maybe, Someday?</h1><p class="big">Do you still see a possibility of us?</p>
   <p class="sub">Not necessarily right now. Not necessarily tomorrow. But genuinely, someday?</p>
+  <p class="hand" style="font-size:clamp(1.6rem,6vw,2rem)">I love you, Pinki. That's why I'm asking.</p>
   <p class="sub" style="color:var(--ivory)">I'd really like to know how you feel.</p>
   <div class="opts" id="opts"></div>
  </div>
@@ -226,7 +217,18 @@ const CONFIG={
  reply:{whatsapp:"919967109657",sms:"",button:"Send my answer ✉",hint:"Opens a message you can edit before sending.",
   intro:"Hey, I opened the 11:11 page. My answer: "},
  video:"assets/dedication-video.mp4",   // your video
- audio:"assets/voice-message.mp3",      // your voice recording
+ letter:[ /* the written message, one string per paragraph */
+  "Hey, {name}...",
+  "I think one of the things I've been trying to understand is why you mean so much to me. And I guess it's not just one particular thing. It's a lot of little things that have added up over time.",
+  "Like, whenever something happens, whether it's something exciting, something completely random, or even just a normal day, I find myself wanting to tell you about it. I look forward to talking to you. I look forward to hearing about your day, sharing things with you, and just having you around.",
+  "And it's not only about the happy moments either. I genuinely want to be there for you through everything. I remember when you had your tonsils operation. I really wished I could've been there with you, just to make sure you were okay. I kept checking on you because I genuinely wanted to know how you were doing. And I think moments like that made me realise just how important you are to me.",
+  "And then there's everything from school. Sometimes I actually wish things had been a little different back then. Maybe we could've talked more, spent more time together, and understood each other a little better.",
+  "I still think about those little memories... us being vice captains in Grade 6, people teasing us, all those school moments. Honestly, it was pretty cool, wasn't it?",
+  "And when I look back, it's funny how we've somehow never really disappeared from each other's lives. We've grown up, things have changed, and we've had our own journeys, but we've still found our way back to talking to each other.",
+  "And I don't think I want to lose that. In fact, I'd really like to keep making memories with you, to spend more time with you, and to be someone you can count on.",
+  "I don't know exactly what the future holds for us, and I'm not expecting you to know either. But I do know that I love you, and that what I feel for you is genuine. I wanted you to know that.",
+  "I guess that's what I wanted to tell you..."
+ ],
  memories:[ /* photo: omit = no picture | null = labelled placeholder | "assets/x.jpg" | ["assets/a.jpg","assets/b.jpg"] = swipeable photos. ratio optional, e.g. "1/1" */
   {when:"7th Grade",note:"Where it all began.",text:"We had something back then, although it didn't last very long it was quite meaningful and will forever be.",photo:"assets/memory-01.jpg",ratio:"1/1"},
   {when:"10th Grade",note:"Funny how things come around.",text:"Feelings resurfaced. There were conversations, hints, and moments that made us wonder if there was something between us again, though you brushed it off recently saying it was all attraction, are you really sure about it?"},
@@ -240,13 +242,13 @@ const CONFIG={
   {when:"Today",note:"Here we are.",text:"We still talk every day. And somewhere along the way, those feelings became something I wanted to be honest about as it was turning into too.",photo:"assets/today-01.jpg"}
  ],
  confession:[
-  "Hey, {name}.",
   "I guess by now you've probably figured out that this isn't just a video dedication.",
   "I've been thinking about us, actually. And it's kinda funny when you look back at everything, isn't it?",
   "From whatever we had back in 7th, to everything that happened in 10th, to that conversation on your birthday... we've had quite a few almosts, haven't we?",
   "And even though we never really figured out what any of it meant, I don't think my feelings ever completely went away.",
   "I genuinely love having you in my life. I love talking to you, sharing random things with you, and just having you around.",
   "But somewhere along the way, I realised that for me, it's become a little more than just friendship.",
+  "If I'm being completely honest... I love you, {name}.",
   "Now, I know you're someone who believes in enjoying life and not rushing into relationships. And honestly, I don't want to rush you either.",
   "I'm not asking you to make a commitment or change how you want to live your life.",
   "I just don't want to keep wondering about the same question without ever actually asking you.",
@@ -282,8 +284,8 @@ const T=s=>s.replace("{name}",CONFIG.name);
 /* ---- chapters + progress ---- */
 const N=7;let cur=-1,max=0;const dots=$('#dots');
 for(let i=0;i<N;i++){const b=document.createElement('button');b.setAttribute('aria-label','Chapter '+(i+1));b.onclick=()=>{if(i<=max&&i!==cur)go(i)};dots.append(b)}
-const enter={1:o=>resetVideo(o&&o.play),2:()=>{$('#track').scrollLeft=0},3:()=>{},4:startConf,5:resetQ,6:startClose};
-function go(i,o){if(cur===3&&i!==3)aud.pause();if(cur===1&&i!==1){vid.pause();$('#black').classList.remove('on');$$('#after>*').forEach(e=>e.classList.remove('show'))}
+const enter={1:o=>resetVideo(o&&o.play),2:()=>{$('#track').scrollLeft=0},3:startLetter,4:startConf,5:resetQ,6:startClose};
+function go(i,o){if(cur===1&&i!==1){vid.pause();$('#black').classList.remove('on');$$('#after>*').forEach(e=>e.classList.remove('show'))}
  const prev=$('#c'+cur);if(prev)prev.classList.remove('on');cur=i;max=Math.max(max,i);
  $$('#dots button').forEach((b,k)=>{b.className=k===i?'cur':k<=max?'seen':''});
  setTimeout(()=>{const c=$('#c'+i);c.classList.add('on');c.scrollTop=0;enter[i]&&enter[i](o)},cur===-1||RM?0:420)}
@@ -310,20 +312,12 @@ const photoHTML=m=>{if(m.photo===undefined)return'';const n=Array.isArray(m.phot
 $('#track').innerHTML=CONFIG.memories.map(m=>`<article class="card">${photoHTML(m)}<h3>${m.when}</h3><p class="hand">${m.note}</p><p>${m.text}</p></article>`).join('');
 $('#toVoice').onclick=()=>go(3);
 
-/* ---- 3 voice ---- */
-const aud=new Audio();aud.preload='metadata';aud.src=CONFIG.audio;$('#apath').textContent=CONFIG.audio;
-const wave=$('#wave'),bars=[];for(let i=0;i<46;i++){const e=document.createElement('i');e.style.setProperty('--h',(18+Math.abs(Math.sin(i*1.7)*Math.cos(i*.6))*82)+'%');e.style.setProperty('--dl',(i%9)*.09+'s');wave.insertBefore(e,$('#seek'));bars.push(e)}
-const fmt=s=>isFinite(s)?Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0'):'0:00';
-const play='<path d="M8 5v14l11-7z"/>',pause='<path d="M6 5h4v14H6zm8 0h4v14h-4z"/>';
-function showAfter(){$('#aDone').classList.add('in-v');$('#toConf').classList.add('in-v')}
-aud.addEventListener('loadedmetadata',()=>$('#dur').textContent=fmt(aud.duration));
-aud.addEventListener('timeupdate',()=>{const p=aud.duration?aud.currentTime/aud.duration:0;$('#cur').textContent=fmt(aud.currentTime);$('#seek').value=p*1000;bars.forEach((b,i)=>b.classList.toggle('p',i/bars.length<p))});
-aud.addEventListener('play',()=>{$('#letter').classList.add('playing');$('#ppi').innerHTML=pause;$('#pp').setAttribute('aria-label','Pause')});
-aud.addEventListener('pause',()=>{$('#letter').classList.remove('playing');$('#ppi').innerHTML=play;$('#pp').setAttribute('aria-label','Play')});
-aud.addEventListener('ended',showAfter);
-aud.addEventListener('error',()=>{$('#aph').style.display='block';$('#pp').disabled=true;showAfter()});
-$('#pp').onclick=()=>aud.paused?aud.play().catch(()=>{}):aud.pause();
-$('#seek').oninput=e=>{if(aud.duration)aud.currentTime=e.target.value/1000*aud.duration};
+/* ---- 3 letter: paragraphs reveal as she scrolls ---- */
+$('#lparas').innerHTML=CONFIG.letter.map(p=>`<p class="lp">${T(p)}</p>`).join('');
+let io2;function startLetter(){io2&&io2.disconnect();$$('#lparas .lp').forEach(p=>p.classList.remove('v'));$('#aDone').classList.remove('in-v');$('#toConf').classList.remove('in-v');
+ const last=$('#lparas').lastElementChild;
+ io2=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('v');if(e.target===last)setTimeout(()=>{$('#aDone').classList.add('in-v');$('#toConf').classList.add('in-v')},1800);io2.unobserve(e.target)}}),{root:$('#c3'),threshold:.3});
+ $$('#lparas .lp').forEach(p=>io2.observe(p))}
 $('#toConf').onclick=()=>go(4);
 
 /* ---- 4 confession: paragraphs reveal as they scroll into view ---- */
