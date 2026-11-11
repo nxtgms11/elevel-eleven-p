@@ -68,15 +68,19 @@ padding:16px 30px;min-height:52px;cursor:pointer;transition:transform .35s ease,
 /* 3 memories */
 .mem{flex-direction:column;justify-content:center;padding-left:0;padding-right:0}
 .mem header{text-align:center;padding:0 var(--pad);margin:0 auto 20px;display:flex;flex-direction:column;gap:12px;align-items:center}
-.track{position:relative;display:flex;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;padding:34px max(22px,calc(50vw - 150px)) 26px;scrollbar-width:none}
+.track{position:relative;display:flex;align-items:flex-start;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;padding:34px max(22px,calc(50vw - 150px)) 26px;scrollbar-width:none}
 .track::-webkit-scrollbar{display:none}
 .track::before{content:"";position:absolute;left:0;right:0;top:14px;height:1px;background:linear-gradient(90deg,transparent,var(--gold-d) 6%,var(--gold-d) 94%,transparent)}
 .card{flex:0 0 min(300px,78vw);scroll-snap-align:center;position:relative;background:linear-gradient(#efe6d2,#e3d7bd);color:#2a2418;padding:14px 14px 20px;border-radius:2px;box-shadow:0 18px 40px rgba(0,0,0,.45);transform:rotate(var(--r,-1deg));transition:transform .5s ease}
 .card:nth-child(even){--r:1.2deg}
 .card:hover{transform:rotate(0) translateY(-6px)}
 .card::before{content:"";position:absolute;top:-25px;left:50%;width:9px;height:9px;margin-left:-4.5px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold)}
-.photo{aspect-ratio:4/3;background:repeating-linear-gradient(45deg,#cfc3a8,#cfc3a8 8px,#c7baa0 8px,#c7baa0 16px);display:flex;align-items:center;justify-content:center;text-align:center;font-size:.7rem;letter-spacing:.14em;color:#6d6149;text-transform:uppercase;overflow:hidden;margin-bottom:14px}
-.photo img{width:100%;height:100%;object-fit:cover}
+.photo{aspect-ratio:4/3;background:repeating-linear-gradient(45deg,#cfc3a8,#cfc3a8 8px,#c7baa0 8px,#c7baa0 16px);display:flex;align-items:center;justify-content:center;text-align:center;font-size:.7rem;letter-spacing:.14em;color:#6d6149;text-transform:uppercase;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none}
+.photo::-webkit-scrollbar{display:none}
+.photo img,.photo .miss{flex:0 0 100%;width:100%;height:100%;scroll-snap-align:center;object-fit:cover;object-position:center 30%}
+.photo .miss{display:flex;align-items:center;justify-content:center;padding:12px;font-size:.65rem;word-break:break-all}
+.pw{position:relative;margin-bottom:14px}
+.cnt{position:absolute;right:8px;bottom:8px;font-size:.62rem;letter-spacing:.08em;background:rgba(7,13,31,.7);color:var(--ivory);padding:3px 9px;border-radius:99px;pointer-events:none}
 .card h3{font-size:1.55rem;font-weight:500}
 .card .hand{color:#8a6d2f;font-size:1.25rem;margin:2px 0 8px}
 .card p{font-size:.92rem;line-height:1.6;color:#3d3526;text-align:left}
@@ -111,6 +115,18 @@ padding:16px 30px;min-height:52px;cursor:pointer;transition:transform .35s ease,
 .q .big{font-family:var(--serif);font-size:clamp(1.5rem,5.6vw,2.2rem);line-height:1.25}
 .opts{display:flex;flex-direction:column;gap:12px;width:100%;margin-top:10px}
 .opts .btn{width:100%;border-radius:14px;padding:18px 20px;text-align:center}
+#qBlock.pre{opacity:0!important;visibility:hidden}
+.fall{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.fall i{position:absolute;left:var(--x);top:var(--y);width:var(--w);height:2px;border-radius:2px;opacity:0;background:linear-gradient(90deg,transparent,rgba(216,184,120,.65) 60%,#fff);filter:drop-shadow(0 0 5px rgba(216,184,120,.9));transform:rotate(32deg)}
+.fall i::after{content:"";position:absolute;right:-2px;top:-3px;width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 12px 3px rgba(216,184,120,.8)}
+.fall.run i{animation:shoot var(--s) var(--d) cubic-bezier(.35,.1,.6,1) forwards}
+@keyframes shoot{0%{opacity:0;transform:rotate(32deg) translateX(0)}12%{opacity:1}85%{opacity:1}100%{opacity:0;transform:rotate(32deg) translateX(var(--len))}}
+.fall .wish2{position:absolute;left:0;right:0;top:46%;text-align:center;opacity:0}
+.fall.run .wish2{animation:wishf 3.2s .7s ease forwards}
+@keyframes wishf{0%,100%{opacity:0}30%,70%{opacity:.9}}
+.fall .bloom{position:absolute;left:50%;top:30%;width:120vmax;height:120vmax;margin:-60vmax 0 0 -60vmax;border-radius:50%;opacity:0;background:radial-gradient(closest-side,rgba(216,184,120,.28),transparent 70%)}
+.fall.run .bloom{animation:bloom 1.5s 2.9s ease-out forwards}
+@keyframes bloom{0%{opacity:0;transform:scale(.15)}45%{opacity:1}100%{opacity:0;transform:scale(1)}}
 .ack{display:flex;flex-direction:column;align-items:center;gap:20px;position:relative}
 .ack p{font-family:var(--serif);font-size:clamp(1.35rem,5vw,1.9rem);line-height:1.5;max-width:28ch}
 
@@ -180,14 +196,15 @@ padding:16px 30px;min-height:52px;cursor:pointer;transition:transform .35s ease,
 <section class="ch conf" id="c4"><div class="in"><h2>There's something I've been meaning to say.</h2><div id="paras"></div><button class="btn fade" id="toQ" style="margin-bottom:10vh">Continue</button></div></section>
 
 <!-- 5 · QUESTION -->
-<section class="ch q" id="c5"><div class="glow"></div><div class="in">
- <div id="qBlock" style="display:flex;flex-direction:column;align-items:center;gap:18px;width:100%">
+<section class="ch q" id="c5"><div class="glow"></div>
+<div class="fall" id="fall" aria-hidden="true"><i style="--x:-12vw;--y:8vh;--w:120px;--len:110vmax;--s:1.4s;--d:0s"></i><i style="--x:25vw;--y:-6vh;--w:100px;--len:100vmax;--s:1.3s;--d:.6s"></i><i style="--x:-18vw;--y:38vh;--w:130px;--len:120vmax;--s:1.5s;--d:1s"></i><i style="--x:4vw;--y:-8vh;--w:230px;--len:85vmax;--s:2.1s;--d:1.3s"></i><p class="hand wish2">make a wish ✦</p><div class="bloom"></div></div><div class="in">
+ <div id="qBlock" class="pre" style="display:flex;flex-direction:column;align-items:center;gap:18px;width:100%">
   <h1>Maybe, Someday?</h1><p class="big">Do you still see a possibility of us?</p>
   <p class="sub">Not necessarily right now. Not necessarily tomorrow. But genuinely, someday?</p>
   <p class="sub" style="color:var(--ivory)">I'd really like to know how you feel.</p>
   <div class="opts" id="opts"></div>
  </div>
- <div class="ack" id="ack" hidden><p id="ackMsg"></p><button class="btn" id="talk">Let's talk about it ♡</button><button class="btn quiet" id="back">← Back to the question</button></div>
+ <div class="ack" id="ack" hidden><p id="ackMsg"></p><button class="btn" id="talk">Let's talk about it ♡</button><a class="btn" id="send" hidden rel="noopener" style="text-decoration:none;display:inline-block"></a><p class="hint" id="sendHint" hidden></p><button class="btn quiet" id="back">← Back to the question</button></div>
  <div class="ack" id="talkBox" hidden><p>No pressure at all. You don't have to answer anything right now. Whenever you feel like it, let's just talk. You can close this page and message me later.</p><button class="btn" id="toClose">Continue</button></div>
 </div></section>
 
@@ -202,15 +219,25 @@ padding:16px 30px;min-height:52px;cursor:pointer;transition:transform .35s ease,
 /* ============ CONFIG — edit everything personal here ============ */
 const CONFIG={
  name:"Pinki",
+ /* Optional "Send my answer" button. She taps it, her messaging app opens with a pre-filled
+    message she can edit, and SHE presses send. Nothing is sent automatically.
+    whatsapp: your number with country code, digits only, e.g. "919876543210" (leave "" to use sms or hide)
+    sms: same idea, e.g. "+919876543210"  (used only if whatsapp is empty). Both empty = button hidden. */
+ reply:{whatsapp:"9976109657",sms:"",button:"Send my answer ✉",hint:"Opens a message you can edit before sending.",
+  intro:"Hey, I opened the 11:11 page. My answer: "},
  video:"assets/dedication-video.mp4",   // your video
  audio:"assets/voice-message.mp3",      // your voice recording
- memories:[ // photo: "assets/memory-01.jpg" or null for a placeholder
-  {when:"7th Grade",note:"Where it all began.",text:"We had something back then, although it didn't last very long.",photo:null},
-  {when:"10th Grade",note:"Funny how things come around.",text:"Feelings resurfaced. There were conversations, hints, and moments that made us wonder if there was something between us again.",photo:null},
-  {when:"The dream",note:"Some things stay with you.",text:"You once told me about a dream where we were in the same college and had feelings for each other.",photo:null},
-  {when:"The reel",note:"Not everything needs to be said directly.",text:"You once sent me a reel that hinted at wanting me to be your boyfriend, even though you weren't really looking for one.",photo:null},
-  {when:"The birthday",note:"An almost, perhaps.",text:"I confessed my feelings on your birthday. We both felt there was something between us, but never figured out what came next.",photo:null},
-  {when:"Today",note:"Here we are.",text:"We still talk every day. And somewhere along the way, those feelings became something I wanted to be honest about.",photo:null}
+ memories:[ /* photo: omit = no picture | null = labelled placeholder | "assets/x.jpg" | ["assets/a.jpg","assets/b.jpg"] = swipeable photos. ratio optional, e.g. "1/1" */
+  {when:"7th Grade",note:"Where it all began.",text:"We had something back then, although it didn't last very long.",photo:"assets/memory-01.jpg",ratio:"1/1"},
+  {when:"10th Grade",note:"Funny how things come around.",text:"Feelings resurfaced. There were conversations, hints, and moments that made us wonder if there was something between us again."},
+  {when:"The dream",note:"Some things stay with you.",text:"You once told me about a dream where we were in the same college and had feelings for each other.",photo:"assets/memory-03.jpg",ratio:"1/1"},
+  {when:"The reel",note:"Not everything needs to be said directly.",text:"You once sent me a reel that hinted at wanting me to be your boyfriend, even though you weren't really looking for one."},
+  {when:"The birthday",note:"An almost, perhaps.",text:"I confessed my feelings on your birthday. We both felt there was something between us, but never figured out what came next.",photo:"assets/birthday-her-01.jpg"},
+  {when:"8th September",note:"Where did the time go?",text:"The first time I called you. I didn't even realise how quickly time went by while I was talking to you.",photo:"assets/call-01.jpg"},
+  {when:"Durga",note:"Nervous doesn't even cover it.",text:"I was so nervous to meet you for the first time after so long. It was awkward, but in a way that made it so memorable. I still wish I could have spent more time with you back then.",photo:["assets/durga-01.jpg"]},
+  {when:"Mysuru",note:"Like we'd known each other forever.",text:"Such a fun day, and such an improvement from last time. We talked without hesitation and roamed around without feeling awkward. The go-karting, the cool pic, the temple visit, even the silly Doraemon movie. Everything was so fun. It didn't feel like we'd barely met face to face. It felt like we'd known each other forever.",photo:["assets/mysuru-01.jpg","assets/mysuru-02.jpg","assets/mysuru-03.jpg"]},
+  {when:"26th September",note:"So memorable.",text:"My birthday turned out to be such a memorable day.",photo:"assets/birthday-me-01.jpg"},
+  {when:"Today",note:"Here we are.",text:"We still talk every day. And somewhere along the way, those feelings became something I wanted to be honest about.",photo:"assets/today-01.jpg"}
  ],
  confession:[
   "Hey, {name}.",
@@ -277,7 +304,10 @@ $('#a3').onclick=()=>go(2);
 $('#a4').onclick=()=>{$$('#after>*').forEach(e=>e.classList.remove('show'));$('#black').classList.remove('on');vid.style.display='';$('#vph').classList.remove('show');resetVideo(true)};
 
 /* ---- 2 memories ---- */
-$('#track').innerHTML=CONFIG.memories.map(m=>`<article class="card"><div class="photo">${m.photo?`<img loading="lazy" src="${m.photo}" alt="${m.when}" onerror="this.parentNode.textContent='Photo not found'">`:'Your photo here'}</div><h3>${m.when}</h3><p class="hand">${m.note}</p><p>${m.text}</p></article>`).join('');
+const imgs=a=>(Array.isArray(a)?a:[a]).map(u=>`<img loading="lazy" decoding="async" src="${u}" alt="" onerror="this.outerHTML='<div class=miss>Add '+this.getAttribute('src')+'</div>'">`).join('');
+const photoHTML=m=>{if(m.photo===undefined)return'';const n=Array.isArray(m.photo)?m.photo.length:1;
+ return `<div class="pw"><div class="photo" style="aspect-ratio:${m.ratio||'4/3'}">${m.photo===null?'Your photo here':imgs(m.photo)}</div>${n>1?`<span class="cnt">${n} photos · swipe</span>`:''}</div>`};
+$('#track').innerHTML=CONFIG.memories.map(m=>`<article class="card">${photoHTML(m)}<h3>${m.when}</h3><p class="hand">${m.note}</p><p>${m.text}</p></article>`).join('');
 $('#toVoice').onclick=()=>go(3);
 
 /* ---- 3 voice ---- */
@@ -305,9 +335,18 @@ $('#toQ').onclick=()=>go(5);
 
 /* ---- 5 question: every option identical, nothing sent or stored ---- */
 $('#opts').innerHTML=CONFIG.options.map((o,i)=>`<button class="btn" data-i="${i}">${o.label}</button>`).join('');
-$$('#opts .btn').forEach(b=>b.onclick=()=>{$('#ackMsg').textContent=CONFIG.options[b.dataset.i].reply;fade($('#qBlock'),$('#ack'))});
+$$('#opts .btn').forEach(b=>b.onclick=()=>{const o=CONFIG.options[b.dataset.i],R=CONFIG.reply,a=$('#send');$('#ackMsg').textContent=o.reply;
+ const txt=encodeURIComponent(R.intro+'"'+o.label+'"');
+ const href=R.whatsapp?`https://wa.me/${R.whatsapp}?text=${txt}`:R.sms?`sms:${R.sms}?&body=${txt}`:'';
+ a.hidden=$('#sendHint').hidden=!href;if(href){a.href=href;a.target='_blank';a.textContent=R.button;$('#sendHint').textContent=R.hint}
+ fade($('#qBlock'),$('#ack'))});
 function fade(a,b){a.style.transition='opacity .6s';a.style.opacity=0;setTimeout(()=>{a.hidden=true;a.style.display='none';b.hidden=false;b.style.opacity=0;b.style.display='flex';requestAnimationFrame(()=>{b.style.transition='opacity .9s';b.style.opacity=1});$('#c5').scrollTop=0},RM?0:600)}
-function resetQ(){['#ack','#talkBox'].forEach(s=>{$(s).hidden=true;$(s).style.display='none'});const q=$('#qBlock');q.hidden=false;q.style.display='flex';q.style.opacity=1}
+let qTok=0;
+async function resetQ(){const k=++qTok,q=$('#qBlock'),f=$('#fall');['#ack','#talkBox'].forEach(x=>{$(x).hidden=true;$(x).style.display='none'});
+ q.hidden=false;q.style.display='flex';q.style.opacity=1;q.style.transition='none';
+ if(RM){q.classList.remove('pre');return}
+ q.classList.add('pre');f.classList.remove('run');void f.offsetWidth;f.classList.add('run');
+ await wait(3900);if(cur!==5||k!==qTok)return;q.style.transition='opacity 1.8s ease';q.classList.remove('pre')}
 $('#back').onclick=()=>fade($('#ack'),$('#qBlock'));
 $('#talk').onclick=()=>fade($('#ack'),$('#talkBox'));
 $('#toClose').onclick=()=>go(6);
